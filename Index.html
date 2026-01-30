@@ -5,7 +5,6 @@
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>PDF to Word – Smart Converter</title>
 <meta name="description" content="Convert PDFs to Word documents online. Browser-only for small files, iLovePDF API for large files.">
-
 <style>
 body { margin:0; font-family:Arial,sans-serif; background:#0f0f0f; color:#fff; text-align:center; }
 .container { max-width:600px; margin:30px auto; padding:20px; }
@@ -26,15 +25,14 @@ button:disabled { opacity:.6; cursor:not-allowed; }
 <body>
 <div class="container">
 
-  <!-- Logo -->
   <div class="logo">
-    <a href="https://ibb.co.com/tMtwGGbr" target="_blank">
+    <a>
       <img src="https://i.ibb.co.com/XZgfQQzR/file-0000000024cc7206a8d22dc065915cc1.png" alt="PDF to Word Logo">
     </a>
   </div>
 
   <h1>PDF to Word</h1>
-  <p>Select a PDF file. Files ≤12 MB will be converted in browser; larger files use iLovePDF API.</p>
+  <p>Select a PDF file. ≤12 MB → Browser conversion, larger → API conversion.</p>
 
   <div class="ad-placeholder">Ad Placeholder (Top)</div>
 
@@ -50,14 +48,12 @@ button:disabled { opacity:.6; cursor:not-allowed; }
 
 </div>
 
-<!-- JS Libraries -->
 <script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
 <script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.1.0/docx.umd.js"></script>
-
 <script>
-const { Document, Packer, Paragraph } = window.docx; // <-- UMD fix
+const { Document, Packer, Paragraph } = window.docx;
 
-const MAX_BROWSER_SIZE = 12 * 1024 * 1024; // 12 MB
+const MAX_BROWSER_SIZE = 12*1024*1024; // 12 MB
 
 const fileInput = document.getElementById("fileInput");
 const convertBtn = document.getElementById("convertBtn");
@@ -81,54 +77,46 @@ convertBtn.onclick = async () => {
   if(!pdfFile) return;
 
   if(pdfFile.size <= MAX_BROWSER_SIZE){
-    // Browser-only conversion
     statusText.innerText = "⏳ Converting in browser...";
     try {
       const arrayBuffer = await pdfFile.arrayBuffer();
       const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
       const doc = new Document();
-
       const pages = pdfDoc.getPages();
       for(const page of pages){
         const textContent = await page.getTextContent?.();
         const text = textContent?.items?.map(i=>i.str).join(" ") || "PDF page content";
-        doc.addSection({ children: [ new Paragraph(text) ] });
+        doc.addSection({ children:[ new Paragraph(text) ] });
       }
-
       const blob = await Packer.toBlob(doc);
       const url = URL.createObjectURL(blob);
-
       downloadLink.href = url;
-      downloadLink.download = pdfFile.name.replace(".pdf","") + ".docx";
+      downloadLink.download = pdfFile.name.replace(".pdf","")+".docx";
       downloadLink.style.display = "inline-block";
       statusText.innerText = "✅ Word document ready (Browser)!";
     } catch(err){
-      statusText.innerText = "❌ Browser conversion failed: " + err.message;
+      statusText.innerText = "❌ Browser conversion failed: "+err.message;
     }
-
   } else {
-    // Large file → API call
     statusText.innerText = "⏳ Uploading and converting via iLovePDF API...";
     try {
       const formData = new FormData();
       formData.append("file", pdfFile);
-
       const res = await fetch("/.netlify/functions/pdf2word", {
         method:"POST",
         body: formData
       });
-
       const data = await res.json();
       if(data.downloadUrl){
         downloadLink.href = data.downloadUrl;
-        downloadLink.download = pdfFile.name.replace(".pdf","") + ".docx";
+        downloadLink.download = pdfFile.name.replace(".pdf","")+".docx";
         downloadLink.style.display = "inline-block";
         statusText.innerText = "✅ Word document ready (API)!";
       } else {
         statusText.innerText = "❌ API conversion failed";
       }
     } catch(err){
-      statusText.innerText = "❌ Server/API error: " + err.message;
+      statusText.innerText = "❌ Server/API error: "+err.message;
     }
   }
 };
