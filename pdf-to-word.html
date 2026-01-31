@@ -4,7 +4,7 @@
 <meta charset="UTF-8">
 <title>PDF to Word – EasyUseHub</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<meta name="description" content="Convert PDF to Word online. Files up to 15MB work directly in browser. Larger files require API.">
+<meta name="description" content="Convert PDF to Word online. Files up to 15MB work in browser. Larger files use secure API.">
 <script src="https://unpkg.com/pdf-lib/dist/pdf-lib.min.js"></script>
 <style>
 body{
@@ -31,11 +31,11 @@ input, button{
 <body>
 
 <header>
-  <img src="https://i.ibb.co.com/dJzLMz0v/file-0000000031a471f89cb536e7c16bcf16.png" alt="EasyUseHub Logo">
+<img src="https://i.ibb.co.com/dJzLMz0v/file-0000000031a471f89cb536e7c16bcf16.png" alt="EasyUseHub Logo">
 </header>
 
 <h1>PDF → Word</h1>
-<p>Files up to <strong>15MB</strong> convert in browser. Larger files require API version.</p>
+<p>Files up to <strong>15MB</strong> convert in browser. Larger files use API.</p>
 
 <input type="file" id="pdfFile" accept="application/pdf">
 <br>
@@ -54,6 +54,7 @@ async function convertPDFtoWord(){
   }
 
   if(file.size <= 15*1024*1024){
+    // Browser-only conversion
     msg.innerText = "Converting in browser...";
     try{
       const bytes = await file.arrayBuffer();
@@ -78,10 +79,35 @@ async function convertPDFtoWord(){
       console.error(err);
     }
   }else{
-    msg.innerHTML = "❌ File larger than 15 MB.<br>Use API version for large files.";
+    // >15MB → API
+    msg.innerText = "Uploading large file to server...";
+    try{
+      const reader = new FileReader();
+      reader.readAsDataURL(file);
+      reader.onload = async () => {
+        const base64 = reader.result.split(',')[1];
+        const res = await fetch("/api/pdf-to-word", {
+          method: "POST",
+          headers: {"Content-Type":"application/json"},
+          body: JSON.stringify({file: base64, filename: file.name})
+        });
+        const data = await res.json();
+        if(res.ok){
+          msg.innerText = "✅ Large file ready. Download link sent.";
+          console.log(data);
+        }else{
+          msg.innerText = "❌ API conversion failed: " + data.error;
+        }
+      };
+    }catch(err){
+      msg.innerText = "❌ API upload failed.";
+      console.error(err);
+    }
   }
 }
 </script>
 
 </body>
 </html>
+
+      
