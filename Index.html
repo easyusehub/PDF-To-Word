@@ -2,113 +2,114 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
+<title>PDF Tools – Free Online (≤15MB)</title>
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
-<title>PDF Tools – Browser Only</title>
-<meta name="description" content="Compress, Merge, PDF to Word, Image to PDF online for PDFs ≤15 MB. Fully browser-based and free.">
+<meta name="description" content="Free online PDF tools. Compress, Merge, PDF to Word & Image to PDF – works in browser for files up to 15MB. No API, no signup.">
+
 <style>
-body { margin:0; font-family:Arial,sans-serif; background:#0f0f0f; color:#fff; text-align:center; }
-.container { max-width:600px; margin:30px auto; padding:20px; }
-.logo img { max-width:220px; margin-bottom:20px; }
-h1 { font-size:30px; margin-bottom:10px; }
-p { color:#d1d5db; font-size:16px; margin-bottom:20px; }
-input[type=file] { display:block; margin:20px auto; }
-button { width:100%; padding:14px; font-size:18px; background:#22c55e; color:#fff; border:none; border-radius:8px; cursor:pointer; }
-button:disabled { opacity:.6; cursor:not-allowed; }
-#status { margin-top:15px; font-weight:bold; }
-#download { display:none; margin-top:18px; padding:12px; background:#16a34a; color:#fff; text-decoration:none; border-radius:8px; display:inline-block; }
-.home-btn { display:inline-block; margin-top:30px; padding:12px 24px; border:2px solid #fff; color:#fff; text-decoration:none; border-radius:8px; font-weight:bold; }
-.home-btn:hover { background:#22c55e; border-color:#22c55e; }
-.ad-placeholder { border:2px dashed #555; padding:20px; margin:25px 0; color:#aaa; font-size:14px; text-align:center; border-radius:6px; }
+body{
+  margin:0;
+  font-family:Arial, sans-serif;
+  background:#0f0f0f;
+  color:#fff;
+  text-align:center;
+}
+.container{
+  max-width:900px;
+  margin:auto;
+  padding:20px;
+}
+.logo img{
+  max-width:200px;
+  margin:20px auto;
+  display:block;
+}
+h1{
+  font-size:32px;
+}
+p{
+  color:#ddd;
+  font-size:17px;
+  line-height:1.6;
+}
+.tool{
+  border:2px solid #fff;
+  padding:20px;
+  margin:25px 0;
+}
+button{
+  background:#16a34a;
+  color:#fff;
+  border:none;
+  padding:14px 25px;
+  font-size:16px;
+  font-weight:bold;
+  cursor:pointer;
+}
+button:hover{
+  opacity:0.9;
+}
+.ad{
+  border:2px dashed #555;
+  padding:20px;
+  margin:25px 0;
+  color:#aaa;
+}
+footer{
+  margin-top:40px;
+  font-size:14px;
+  color:#aaa;
+}
 </style>
 </head>
-<body>
 
+<body>
 <div class="container">
 
-  <div class="logo">
-    <img src="https://i.ibb.co/XZgfQQzR/file-0000000024cc7206a8d22dc065915cc1.png" alt="PDF Tools Logo">
-  </div>
+<div class="logo">
+  <img src="https://i.ibb.co.com/XZgfQQzR/file-0000000024cc7206a8d22dc065915cc1.png" alt="PDF Tool Logo">
+</div>
 
-  <h1>PDF Tools</h1>
-  <p>Compress, Merge, PDF→Word, Image→PDF online. Only PDFs ≤15 MB supported in browser.</p>
+<h1>Free Online PDF Tools</h1>
 
-  <div class="ad-placeholder">Ad Placeholder (Top)</div>
+<p>
+This website allows you to convert and manage PDF files directly in your browser.
+Files up to <b>15 MB</b> work smoothly without any API or server.
+Larger files are not supported.
+</p>
 
-  <input type="file" id="fileInput" accept="application/pdf">
-  <button id="convertBtn" disabled>Convert PDF</button>
+<div class="ad">Ad Space (You can add ads later)</div>
 
-  <p id="status"></p>
-  <a id="download">⬇ Download File</a>
+<div class="tool">
+<h2>PDF to Word</h2>
+<input type="file" id="pdfFile" accept="application/pdf">
+<br><br>
+<button onclick="checkSize()">Convert</button>
+<p id="msg"></p>
+</div>
 
-  <div class="ad-placeholder">Ad Placeholder (Bottom)</div>
-
-  <a class="home-btn" href="#">🏠 Back to Home</a>
+<footer>
+Only files ≤15 MB are supported.  
+No API • No login • 100% Free  
+</footer>
 
 </div>
 
-<script src="https://cdnjs.cloudflare.com/ajax/libs/pdf-lib/1.17.1/pdf-lib.min.js"></script>
-<script src="https://cdnjs.cloudflare.com/ajax/libs/docx/7.1.0/docx.umd.js"></script>
 <script>
-const { Document, Packer, Paragraph } = window.docx;
-const MAX_BROWSER_SIZE = 15*1024*1024; // 15 MB
-
-const fileInput = document.getElementById("fileInput");
-const convertBtn = document.getElementById("convertBtn");
-const statusText = document.getElementById("status");
-const downloadLink = document.getElementById("download");
-
-let pdfFile = null;
-
-fileInput.onchange = () => {
-  pdfFile = fileInput.files[0];
-  if(!pdfFile) {
-    convertBtn.disabled = true;
-    statusText.innerText = "";
+function checkSize(){
+  const f = document.getElementById("pdfFile").files[0];
+  const msg = document.getElementById("msg");
+  if(!f){
+    msg.innerText = "Please select a PDF file.";
     return;
   }
-
-  if(pdfFile.size > MAX_BROWSER_SIZE){
-    convertBtn.disabled = true;
-    statusText.innerText = "❌ File too large! Max 15 MB supported in browser.";
-    downloadLink.style.display = "none";
+  if(f.size > 15 * 1024 * 1024){
+    msg.innerText = "❌ Files larger than 15 MB are not supported. Only ≤15 MB allowed.";
   } else {
-    convertBtn.disabled = false;
-    statusText.innerText = `Selected: ${pdfFile.name} (${(pdfFile.size/1024/1024).toFixed(2)} MB)`;
-    downloadLink.style.display = "none";
+    msg.innerText = "✅ File accepted (≤15 MB). Browser conversion can run here.";
   }
-};
-
-convertBtn.onclick = async () => {
-  if(!pdfFile) return;
-  statusText.innerText = "⏳ Converting in browser...";
-
-  try {
-    const arrayBuffer = await pdfFile.arrayBuffer();
-    const pdfDoc = await PDFLib.PDFDocument.load(arrayBuffer);
-    const doc = new Document();
-    const pages = pdfDoc.getPages();
-
-    for(const page of pages){
-      let text = "";
-      try{
-        const content = await page.getTextContent?.();
-        text = content?.items?.map(i=>i.str).join(" ") || "Page content";
-      } catch(e){ text = "Page content"; }
-
-      doc.addSection({ children:[ new Paragraph(text) ] });
-    }
-
-    const blob = await Packer.toBlob(doc);
-    const url = URL.createObjectURL(blob);
-    downloadLink.href = url;
-    downloadLink.download = pdfFile.name.replace(".pdf","")+".docx";
-    downloadLink.style.display = "inline-block";
-    statusText.innerText = "✅ Conversion done! Download below.";
-  } catch(err){
-    statusText.innerText = "❌ Conversion failed: "+err.message;
-  }
-};
+}
 </script>
 
 </body>
-</ht
+</html>
