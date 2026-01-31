@@ -13,25 +13,9 @@ body{
   padding:40px;
   background:#f5f7fa;
 }
-header{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  max-width:800px;
-  margin:0 auto 30px auto;
-}
 header img{
   max-height:60px;
-}
-header a{
-  padding:10px 18px;
-  background:#2563eb;
-  color:#fff;
-  text-decoration:none;
-  border-radius:6px;
-}
-header a:hover{
-  background:#1e40af;
+  margin-bottom:20px;
 }
 input, button{
   margin:20px;
@@ -47,6 +31,23 @@ input, button{
   padding:20px;
   background:#f0f0f0;
   color:#777;
+  max-width:600px;
+  margin-left:auto;
+  margin-right:auto;
+  border-radius:6px;
+}
+.back-home{
+  display:inline-block;
+  margin-top:30px;
+  padding:12px 25px;
+  background:#2563eb;
+  color:#fff;
+  text-decoration:none;
+  border-radius:6px;
+  font-size:16px;
+}
+.back-home:hover{
+  background:#1e40af;
 }
 </style>
 </head>
@@ -55,9 +56,6 @@ input, button{
 <header>
   <!-- Logo -->
   <img src="https://i.ibb.co.com/dJzLMz0v/file-0000000031a471f89cb536e7c16bcf16.png" alt="EasyUseHub Logo">
-
-  <!-- Home button -->
-  <a href="index.html">Home</a>
 </header>
 
 <h1>PDF → Word</h1>
@@ -69,10 +67,13 @@ input, button{
 
 <div id="msg"></div>
 
-<!-- Ad space -->
+<!-- Ad placeholder -->
 <div class="ad">
   Ad placeholder
 </div>
+
+<!-- Back to Home button -->
+<a href="https://easyusehub.blogspot.com/p/free-pdf-tools-easyusehub.html?m=1" class="back-home">Back to Home</a>
 
 <script>
 async function convertPDFtoWord(){
